@@ -6,7 +6,7 @@ const PlaygroundPage: React.FC = () => {
     const [prompt, setPrompt] = useState('Write a short story about a farmer who finds a mysterious, glowing seed.');
     const [response, setResponse] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [model, setModel] = useState('gemini-3-pro-preview');
+    const [model, setModel] = useState('gemini-2.5-pro');
     const [temperature, setTemperature] = useState(0.7);
     const [topK, setTopK] = useState(40);
     const [topP, setTopP] = useState(0.95);
@@ -46,8 +46,7 @@ const PlaygroundPage: React.FC = () => {
                         onChange={(e) => setModel(e.target.value)}
                         className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                     >
-                        <option value="gemini-3-flash-preview">Gemini 3 Flash (Basic)</option>
-                        <option value="gemini-3-pro-preview">Gemini 3 Pro (Advanced)</option>
+                        <option value="gemini-2.5-pro">Gemini 2.5 Pro</option>
                     </select>
                 </div>
                 <div>

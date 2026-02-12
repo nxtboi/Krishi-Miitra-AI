@@ -102,7 +102,7 @@ Examples of such replies:
 For all other questions related to farming, provide a direct and helpful answer. Your responses should be formatted for easy readability with markdown.`;
 
         const options = {
-            model: 'gemini-3-flash-preview', // Use the faster model for chat
+            model: 'gemini-2.5-pro', // Use the faster model for chat
             config: {
                 systemInstruction: systemInstruction,
             },

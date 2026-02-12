@@ -72,7 +72,7 @@ const IrrigationPlannerPage: React.FC<IrrigationPlannerPageProps> = ({ language 
             (chunk) => {
               setPlan(prevPlan => (prevPlan || '') + chunk);
             },
-            { model: 'gemini-3-flash-preview' } // Use the faster model for planning
+            { model: 'gemini-2.5-pro' } // Use the faster model for planning
         );
     } catch (err: any) {
         setError(err.message || "An unexpected error occurred.");

@@ -1,4 +1,5 @@
 
+
 import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
 
 // The API key is assumed to be available from the environment.
@@ -24,7 +25,7 @@ export const generateResponseStream = async (
     if (!apiKey) {
         throw new Error("Gemini API key is not configured.");
     }
-    const modelName = options?.model || 'gemini-3-pro-preview';
+    const modelName = options?.model || 'gemini-2.5-pro';
 
     const contentParts: any[] = [];
 
@@ -80,7 +81,7 @@ export const generateChatTitle = async (message: string): Promise<string> => {
     try {
         const prompt = `Generate a very short (3-5 words) and descriptive title for a chat that starts with: "${message}". Return ONLY the title text, no quotes or labels.`;
         const response: GenerateContentResponse = await ai.models.generateContent({
-            model: 'gemini-3-flash-preview',
+            model: 'gemini-2.5-pro',
             contents: prompt
         });
         return response.text?.trim().replace(/"/g, '') || "";
