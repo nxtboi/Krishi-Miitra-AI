@@ -33,6 +33,9 @@ const IrrigationPlannerPage: React.FC<IrrigationPlannerPageProps> = ({ language 
   const [age, setAge] = useState<string>('30');
   const [soil, setSoil] = useState<SoilType>(SoilType.Alluvial);
   const [weather, setWeather] = useState<'Sunny' | 'Cloudy' | 'Rainy'>('Sunny');
+  const [soilMoisture, setSoilMoisture] = useState<string>('');
+  const [ndvi, setNdvi] = useState<'Not Available' | 'Low' | 'Moderate' | 'High'>('Not Available');
+
 
   const [isLoading, setIsLoading] = useState(false);
   const [plan, setPlan] = useState<string | null>(null);
@@ -48,7 +51,7 @@ const IrrigationPlannerPage: React.FC<IrrigationPlannerPageProps> = ({ language 
     
     const langName = languages.find(l => l.code === language)?.name || 'English';
 
-    const prompt = `
+    let prompt = `
         You are an agricultural expert providing advice to Indian farmers. Your response must be in ${langName}.
 
         Create a detailed and practical irrigation plan for the following situation:
@@ -56,14 +59,26 @@ const IrrigationPlannerPage: React.FC<IrrigationPlannerPageProps> = ({ language 
         - Age of Crop: ${age} days
         - Soil Type: ${soil}
         - Current Weather: ${weather}
+    `;
 
-        Your response should be easy to understand and formatted with the following sections using markdown-style bolding for titles:
+    if (soilMoisture) {
+        prompt += `\n- IoT Soil Sensor Reading: ${soilMoisture}% moisture`;
+    }
+    if (ndvi && ndvi !== 'Not Available') {
+        prompt += `\n- Satellite NDVI Reading: ${ndvi}`;
+    }
+
+    prompt += `\nYour response should be easy to understand and formatted with the following sections using markdown-style bolding for titles:
 
         **1. Irrigation Frequency:** How often should the farmer irrigate (e.g., every X days)?
         **2. Water Amount:** How much water is needed per irrigation session (e.g., in inches, or liters per plant/area)? Be specific.
         **3. Best Time to Irrigate:** What is the most effective time of day to water the crop?
         **4. Key Considerations & Tips:** Provide 2-3 important tips specific to this crop, soil, and weather combination. For example, mention signs of over/under-watering or specific techniques.
     `;
+
+    if (soilMoisture || (ndvi && ndvi !== 'Not Available')) {
+         prompt += `\n\n**IMPORTANT:** Use the provided IoT sensor and/or NDVI data to refine your recommendations for irrigation frequency and water amount. A lower moisture percentage or lower NDVI may indicate a need for more frequent or deeper watering.`;
+    }
     
     try {
         await generateResponseStream(
@@ -72,7 +87,7 @@ const IrrigationPlannerPage: React.FC<IrrigationPlannerPageProps> = ({ language 
             (chunk) => {
               setPlan(prevPlan => (prevPlan || '') + chunk);
             },
-            { model: 'gemini-2.5-pro' } // Use the faster model for planning
+            { model: 'gemini-3-pro-preview' } // Use the pro model for planning
         );
     } catch (err: any) {
         setError(err.message || "An unexpected error occurred.");
@@ -89,42 +104,83 @@ const IrrigationPlannerPage: React.FC<IrrigationPlannerPageProps> = ({ language 
           <h1 className="text-3xl font-bold text-stone-800 mb-2">{t.title}</h1>
           <p className="text-gray-600 mb-6">{t.description}</p>
           
-          <form onSubmit={handleGeneratePlan}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Crop Selection */}
-              <div>
-                <label htmlFor="crop" className="block text-sm font-medium text-gray-700">{t.cropLabel}</label>
-                <select id="crop" value={crop} onChange={e => setCrop(e.target.value as Crop)} className="mt-1 w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-lime-500 focus:border-lime-500 bg-white text-gray-900">
-                  {Object.values(Crop).map(c => <option key={c} value={c}>{c}</option>)}
-                </select>
-              </div>
+          <form onSubmit={handleGeneratePlan} className="space-y-8">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-700 mb-3 border-b pb-2">Basic Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                {/* Crop Selection */}
+                <div>
+                  <label htmlFor="crop" className="block text-sm font-medium text-gray-700">{t.cropLabel}</label>
+                  <select id="crop" value={crop} onChange={e => setCrop(e.target.value as Crop)} className="mt-1 w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-lime-500 focus:border-lime-500 bg-white text-gray-900">
+                    {Object.values(Crop).map(c => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                </div>
 
-              {/* Crop Age */}
-              <div>
-                <label htmlFor="age" className="block text-sm font-medium text-gray-700">{t.ageLabel}</label>
-                <input type="number" id="age" value={age} onChange={e => setAge(e.target.value)} required min="1" className="mt-1 w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-lime-500 focus:border-lime-500 bg-white text-gray-900" />
-              </div>
+                {/* Crop Age */}
+                <div>
+                  <label htmlFor="age" className="block text-sm font-medium text-gray-700">{t.ageLabel}</label>
+                  <input type="number" id="age" value={age} onChange={e => setAge(e.target.value)} required min="1" className="mt-1 w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-lime-500 focus:border-lime-500 bg-white text-gray-900" />
+                </div>
 
-              {/* Soil Type */}
-              <div>
-                <label htmlFor="soil" className="block text-sm font-medium text-gray-700">{t.soilLabel}</label>
-                <select id="soil" value={soil} onChange={e => setSoil(e.target.value as SoilType)} className="mt-1 w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-lime-500 focus:border-lime-500 bg-white text-gray-900">
-                  {Object.values(SoilType).map(s => <option key={s} value={s}>{s}</option>)}
-                </select>
-              </div>
+                {/* Soil Type */}
+                <div>
+                  <label htmlFor="soil" className="block text-sm font-medium text-gray-700">{t.soilLabel}</label>
+                  <select id="soil" value={soil} onChange={e => setSoil(e.target.value as SoilType)} className="mt-1 w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-lime-500 focus:border-lime-500 bg-white text-gray-900">
+                    {Object.values(SoilType).map(s => <option key={s} value={s}>{s}</option>)}
+                  </select>
+                </div>
 
-              {/* Weather Condition */}
-              <div>
-                <label htmlFor="weather" className="block text-sm font-medium text-gray-700">{t.weatherLabel}</label>
-                <select id="weather" value={weather} onChange={e => setWeather(e.target.value as any)} className="mt-1 w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-lime-500 focus:border-lime-500 bg-white text-gray-900">
-                  <option value="Sunny">{t.weatherSunny}</option>
-                  <option value="Cloudy">{t.weatherCloudy}</option>
-                  <option value="Rainy">{t.weatherRainy}</option>
-                </select>
+                {/* Weather Condition */}
+                <div>
+                  <label htmlFor="weather" className="block text-sm font-medium text-gray-700">{t.weatherLabel}</label>
+                  <select id="weather" value={weather} onChange={e => setWeather(e.target.value as any)} className="mt-1 w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-lime-500 focus:border-lime-500 bg-white text-gray-900">
+                    <option value="Sunny">{t.weatherSunny}</option>
+                    <option value="Cloudy">{t.weatherCloudy}</option>
+                    <option value="Rainy">{t.weatherRainy}</option>
+                  </select>
+                </div>
               </div>
             </div>
 
-            <div className="mt-8">
+            <div>
+                <h3 className="text-lg font-semibold text-gray-700 mb-3 border-b pb-2">{t.advancedDataTitle}</h3>
+                <p className="text-xs text-gray-500 mb-4">{t.advancedDataDescription}</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                    {/* Soil Moisture */}
+                    <div>
+                        <label htmlFor="soilMoisture" className="block text-sm font-medium text-gray-700">{t.soilMoistureLabel}</label>
+                        <input 
+                            type="number" 
+                            id="soilMoisture" 
+                            value={soilMoisture} 
+                            onChange={e => setSoilMoisture(e.target.value)} 
+                            min="0" max="100"
+                            placeholder={t.soilMoisturePlaceholder}
+                            className="mt-1 w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-lime-500 focus:border-lime-500 bg-white text-gray-900" 
+                        />
+                        <p className="mt-1 text-xs text-gray-500">{t.soilMoistureDescription}</p>
+                    </div>
+
+                    {/* NDVI */}
+                    <div>
+                        <label htmlFor="ndvi" className="block text-sm font-medium text-gray-700">{t.ndviLabel}</label>
+                        <select 
+                            id="ndvi" 
+                            value={ndvi} 
+                            onChange={e => setNdvi(e.target.value as any)} 
+                            className="mt-1 w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-lime-500 focus:border-lime-500 bg-white text-gray-900"
+                        >
+                            <option value="Not Available">{t.ndviOptions.notAvailable}</option>
+                            <option value="Low">{t.ndviOptions.low}</option>
+                            <option value="Moderate">{t.ndviOptions.moderate}</option>
+                            <option value="High">{t.ndviOptions.high}</option>
+                        </select>
+                        <p className="mt-1 text-xs text-gray-500">{t.ndviDescription}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div>
               <button type="submit" disabled={isLoading} className="w-full flex justify-center items-center py-3 px-4 text-sm font-medium text-white bg-lime-600 rounded-md shadow-sm hover:bg-lime-700 disabled:bg-gray-400">
                 {isLoading ? (
                     <>

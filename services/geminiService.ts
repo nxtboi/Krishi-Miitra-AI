@@ -25,7 +25,7 @@ export const generateResponseStream = async (
     if (!apiKey) {
         throw new Error("Gemini API key is not configured.");
     }
-    const modelName = options?.model || 'gemini-2.5-pro';
+    const modelName = options?.model || 'gemini-3-pro-preview';
 
     const contentParts: any[] = [];
 
@@ -81,7 +81,7 @@ export const generateChatTitle = async (message: string): Promise<string> => {
     try {
         const prompt = `Generate a very short (3-5 words) and descriptive title for a chat that starts with: "${message}". Return ONLY the title text, no quotes or labels.`;
         const response: GenerateContentResponse = await ai.models.generateContent({
-            model: 'gemini-2.5-pro',
+            model: 'gemini-3-pro-preview',
             contents: prompt
         });
         return response.text?.trim().replace(/"/g, '') || "";

@@ -1,6 +1,7 @@
 
+
 import React, { useState } from 'react';
-import { EyeIcon, EyeOffIcon } from './icons/Icons';
+import { EyeIcon, EyeOffIcon, AlertTriangleIcon } from './icons/Icons';
 import * as authService from '../services/authService';
 import { User, LanguageCode } from '../types';
 import translations from '../services/translations';
@@ -57,9 +58,9 @@ const LoginPage: React.FC<LoginPageProps> = ({ onAuthSuccess, onSwitchToSignup, 
             <div className="absolute inset-0 bg-black/30"></div>
         </div>
         
-        <div className="relative z-10 w-full max-w-sm p-8 space-y-6 bg-stone-50 rounded-2xl shadow-lg">
+        <div className="relative z-10 w-full max-w-sm p-8 space-y-6 bg-white/80 backdrop-blur-md rounded-2xl shadow-lg border border-white/30">
             <div className="absolute top-4 right-4">
-                <div className="border border-gray-300 rounded-md">
+                <div className="border border-gray-300 rounded-md bg-white/50">
                     <LanguageSelector language={language} setLanguage={setLanguage} className="text-gray-600 hover:bg-gray-100" />
                 </div>
             </div>
@@ -84,25 +85,18 @@ const LoginPage: React.FC<LoginPageProps> = ({ onAuthSuccess, onSwitchToSignup, 
                             required
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
-                            className="w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500"
+                            className="w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500 transition-all duration-300"
                         />
                     </div>
                 </div>
 
                 <div>
-                    <div className="flex items-center justify-between">
-                        <label
-                            htmlFor="password"
-                            className="block text-sm font-medium text-gray-700"
-                        >
-                            {t.passwordLabel}
-                        </label>
-                        <div className="text-sm">
-                            <button type="button" onClick={() => setIsResetModalOpen(true)} className="font-medium text-green-600 hover:text-green-500 focus:outline-none">
-                            {t.forgotPasswordLink}
-                            </button>
-                        </div>
-                    </div>
+                    <label
+                        htmlFor="password"
+                        className="block text-sm font-medium text-gray-700"
+                    >
+                        {t.passwordLabel}
+                    </label>
                     <div className="relative mt-1">
                         <input
                             id="password"
@@ -112,7 +106,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onAuthSuccess, onSwitchToSignup, 
                             required
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500"
+                            className="w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500 transition-all duration-300"
                         />
                         <button
                             type="button"
@@ -121,6 +115,11 @@ const LoginPage: React.FC<LoginPageProps> = ({ onAuthSuccess, onSwitchToSignup, 
                             aria-label={showPassword ? "Hide password" : "Show password"}
                         >
                             {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+                        </button>
+                    </div>
+                     <div className="text-right mt-2">
+                        <button type="button" onClick={() => setIsResetModalOpen(true)} className="text-xs font-medium text-green-600 hover:text-green-500 hover:underline focus:outline-none">
+                            {t.forgotPasswordLink}
                         </button>
                     </div>
                 </div>
@@ -139,15 +138,30 @@ const LoginPage: React.FC<LoginPageProps> = ({ onAuthSuccess, onSwitchToSignup, 
                     </label>
                 </div>
 
-                {error && <div className="p-3 bg-red-100 border border-red-200 rounded-md"><p className="text-sm text-red-700 text-center">{error}</p></div>}
+                {error && (
+                    <div className="flex items-center gap-2 p-3 bg-red-100 border border-red-200 rounded-md">
+                        <AlertTriangleIcon className="w-5 h-5 text-red-600 flex-shrink-0" />
+                        <p className="text-sm text-red-700">{error}</p>
+                    </div>
+                )}
                 
                 <div>
                     <button
                         type="submit"
                         disabled={isLoading}
-                        className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:bg-gray-400"
+                        className="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:bg-gray-400 disabled:cursor-not-allowed transition-all"
                     >
-                        {isLoading ? 'Logging in...' : t.loginButton}
+                        {isLoading ? (
+                            <>
+                                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                <span>Logging in...</span>
+                            </>
+                        ) : (
+                            t.loginButton
+                        )}
                     </button>
                 </div>
             </form>

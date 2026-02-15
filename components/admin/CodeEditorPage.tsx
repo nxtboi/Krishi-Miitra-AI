@@ -76,7 +76,7 @@ New file content:
                     fullResponse += chunk;
                     setFileContent(fullResponse);
                 },
-                { model: 'gemini-2.5-pro' } // Use a more powerful model for code
+                { model: 'gemini-3-pro-preview' } // Use a more powerful model for code
             );
         } catch (error: any) {
             alert(`Error from AI: ${error.message}`);
