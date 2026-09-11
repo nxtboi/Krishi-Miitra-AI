@@ -9,11 +9,14 @@ const CURRENT_USER_KEY = 'krishi_mitra_currentUser';
 const hashPassword = (pass: string) => btoa(pass);
 
 const initializeUsers = () => {
-  let users: User[] = JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
+  let storedUsers: User[] = [];
+  try {
+    storedUsers = JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
+  } catch (e) {
+    storedUsers = [];
+  }
   
-  // This ensures the database is recreated with specific users if it's empty
-  // or if we want to enforce a reset on load. For this request, we'll reset it.
-  users = [
+  const defaultUsers: User[] = [
     {
       fullName: 'Admin User',
       username: 'admin',
@@ -26,7 +29,19 @@ const initializeUsers = () => {
       phone: '9999999999',
       password: hashPassword('147896'), // User-requested password
     },
+    {
+      fullName: 'Farmer User',
+      username: 'user',
+      phone: '1234567890',
+      password: hashPassword('user'), // User-requested account
+    },
   ];
+
+  const userMap = new Map<string, User>();
+  storedUsers.forEach(u => userMap.set(u.username.toLowerCase(), u));
+  defaultUsers.forEach(u => userMap.set(u.username.toLowerCase(), u));
+
+  const users = Array.from(userMap.values());
   localStorage.setItem(USERS_KEY, JSON.stringify(users));
   
   return users;

@@ -131,6 +131,33 @@ export const IndiaMartIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) =>
     </svg>
 );
 
+export const BigHaatIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+    <svg role="img" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+        <title>BigHaat</title>
+        <rect width="24" height="24" rx="4" fill="#00875A"/>
+        <path d="M7 17V7h4.5c1.4 0 2.5 1.1 2.5 2.5 0 .9-.5 1.7-1.2 2.1 1 .4 1.7 1.4 1.7 2.4 0 1.7-1.3 3-3 3H7zm2.5-7.5h2c.6 0 1-.4 1-1s-.4-1-1-1h-2v2zm0 5.5h2.5c.8 0 1.5-.7 1.5-1.5s-.7-1.5-1.5-1.5H9.5V15z" fill="#FFFFFF"/>
+        <circle cx="18" cy="8" r="2" fill="#84CC16"/>
+    </svg>
+);
+
+export const AgriBegriIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+    <svg role="img" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+        <title>AgriBegri</title>
+        <rect width="24" height="24" rx="4" fill="#EA580C"/>
+        <path d="M12 4L6 19h3.5l1.2-3.5h6.6L18.5 19H22L16 4h-4zm.7 4.8l2.2 6.2h-4.4l2.2-6.2z" fill="#FFFFFF"/>
+        <path d="M4 14l2-3 2 3H4z" fill="#FEF08A"/>
+    </svg>
+);
+
+export const IffcoIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+    <svg role="img" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+        <title>IFFCO Bazar</title>
+        <rect width="24" height="24" rx="4" fill="#15803D"/>
+        <path d="M6 8h3v8H6V8zm5 0h7v2.5h-4.5v1.5h3.5v2.5h-3.5v1.5H18V18h-7V8z" fill="#FFFFFF"/>
+        <circle cx="19" cy="6" r="2" fill="#EAB308"/>
+    </svg>
+);
+
 export const ArrowRightIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
     <line x1="5" y1="12" x2="19" y2="12"></line>

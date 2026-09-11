@@ -82,13 +82,31 @@ export enum ProductCategory {
   Irrigation = "Irrigation Systems",
 }
 
+export interface ProductShoppingLinks {
+  bighaat?: string;
+  agribegri?: string;
+  iffcobazar?: string;
+  amazon?: string;
+  flipkart?: string;
+  indiamart?: string;
+}
+
 export interface Product {
   id: string;
   name: string;
   category: ProductCategory;
   price: number;
+  originalPrice?: number;
+  unit?: string;
+  rating?: number;
+  reviewsCount?: number;
+  brand?: string;
+  description?: string;
   image: string;
   keywords: string[];
+  shoppingLinks?: ProductShoppingLinks;
+  inStock?: boolean;
+  verifiedForFarming?: boolean;
 }
 
 // Admin Panel Types
