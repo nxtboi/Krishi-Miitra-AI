@@ -224,5 +224,5 @@ Contributions, feedback, and feature suggestions are welcome!
 This project is licensed under the **MIT License**.
 
 <div align="center">
-  <sub>Built with ❤️ for Indian Farmers • Powered by Google AI Studio & Gemini</sub>
+  <sub>Built with ❤️ for Indian Farmers • Powered by Vijay Prasad</sub>
 </div>
