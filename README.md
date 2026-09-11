@@ -8,8 +8,6 @@
 [![Google Gemini API](https://img.shields.io/badge/Google%20Gemini-GenAI-4285F4?logo=google&logoColor=white)](https://ai.google.dev/)
 [![Open-Meteo](https://img.shields.io/badge/Weather-Open--Meteo-FFA500)](https://open-meteo.com/)
 
-[**Explore Live in Google AI Studio**](https://ai.studio/apps/drive/1ZBegRoFadngHfbiZKiEbISuLPOahe4S4)
-
 </div>
 
 ---
